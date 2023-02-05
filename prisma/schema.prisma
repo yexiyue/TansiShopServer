@@ -1,0 +1,56 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  username String
+  password String
+}
+
+model Clothe{
+  id Int @id @default(autoincrement())
+  name String
+  //货号
+  articleNo String? @unique
+  frontImg String?
+  backImg String?
+  //面料
+  fabric String?
+  publish Boolean @default(false)
+  banners Banner[]
+  price Int
+  category String
+  Category Category @relation(fields: [category],references: [value])
+  createTime DateTime @default(now())
+  colorCount ColorCount[]
+}
+//轮播图
+model Banner{
+  id Int @id @default(autoincrement())
+  imgUrl String
+  clotheId Int
+  Clothe Clothe @relation(fields: [clotheId],references: [id])
+}
+//分类
+model Category{
+  id Int @id @default(autoincrement())
+  value String @unique
+  Clothes Clothe[]
+}
+
+model ColorCount{
+  id Int @id @default(autoincrement())
+  color String
+  count Int @default(0)
+  clotheId Int
+  Clothe Clothe @relation(fields: [clotheId],references: [id])
+}
